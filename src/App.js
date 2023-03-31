@@ -1,8 +1,11 @@
+import Courseinfo from "./courseinfo";
 
 function App() {
   return (
-    <h1>App</h1>
-  );
+    <>
+     <Courseinfo />    
+    </>  
+  )
 }
 
 export default App;
