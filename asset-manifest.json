@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/Full-Stack-Open-Part2/static/js/main.4f5440f9.js",
+    "main.js": "/Full-Stack-Open-Part2/static/js/main.edf4656c.js",
     "index.html": "/Full-Stack-Open-Part2/index.html",
-    "main.4f5440f9.js.map": "/Full-Stack-Open-Part2/static/js/main.4f5440f9.js.map"
+    "main.edf4656c.js.map": "/Full-Stack-Open-Part2/static/js/main.edf4656c.js.map"
   },
   "entrypoints": [
-    "static/js/main.4f5440f9.js"
+    "static/js/main.edf4656c.js"
   ]
 }
