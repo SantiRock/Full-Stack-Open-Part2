@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import phonebookService from '../services/phonebook'
 
 const Filter = ( {handleFilter} ) => {
     return (
@@ -38,10 +38,25 @@ const PersonForm = ( {addPerson, newName, handlePersonChange,
         )
     }
 
-const Person = ( { name, number} ) => <p>{name} - {number}</p>
+const Person = ( { name, number, deleteClickHandler } ) => {
+return(
+    <li>
+        {name} - {number}
+        <button onClick={deleteClickHandler}>Delete</button>
+    </li>
+)}
 
-const Persons = ( {showAll} ) => showAll.map(person => 
-<Person key={person.id} name={person.name} number={person.number}/>) 
+const Persons = ( {showAll, deletePers} ) => {
+ 
+    return (
+        <ul>
+            {showAll.map(person => 
+            <Person key={person.id} name={person.name} 
+            number={person.number} 
+            deleteClickHandler={() => deletePers(person.id, person.name)}/>)}
+        </ul>
+    )
+} 
 
 const Section = ( {title, children} ) => {
     return(
@@ -52,7 +67,6 @@ const Section = ( {title, children} ) => {
     )
 }
 
-
 const Phonebook = () => {
     const [persons, setPersons] = useState([])
     const [newName, setName] = useState('')
@@ -60,32 +74,60 @@ const Phonebook = () => {
     const [showAll, setShowAll] = useState(persons)
 
     useEffect(() => {
-        axios
-            .get('http://localhost:3001/persons')
-            .then(response => {
-                setPersons(response.data)
-                setShowAll(response.data)
+        phonebookService
+            .getAll()
+            .then(initialPersons => {
+                setPersons(initialPersons)
+                setShowAll(initialPersons)
             })
     }, [])  
 
     const addPerson = (event) => {
-    if (persons.some(person => person.name.toLowerCase() === newName.toLowerCase())) {
-        alert(newName + ' is already added you phonebook')
-        setName('')
-        setNumber('')
-    } else {
         event.preventDefault()
-        const personObject = {
-            name: newName,
-            number: newNumber,
-            id: persons.length + 1
-        }
-        setPersons(persons.concat(personObject))
-        setShowAll(persons.concat(personObject))
-        setName('')
-        setNumber('')
+        if (persons.some(person => person.name.toLowerCase() === newName.toLowerCase())) {
+            if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+                const contact = persons.find(p => p.name.toLowerCase() === newName.toLocaleLowerCase())
+                const changeNumber = { ...contact, number: newNumber}
+                
+                phonebookService
+                    .update(contact.id, changeNumber)
+                    .then(newPerson => {
+                        setPersons(persons.map(person => person.id !== contact.id ? person : newPerson))
+                        setShowAll(persons.map(person => person.id !== contact.id ? person : newPerson))
+                        setName('')
+                        setNumber('')
+                    })
+            } else {
+                setName('')
+                setNumber('')
+             }
+
+        } else {  
+            const personObject = {
+                name: newName,
+                number: newNumber,
+            }
+            phonebookService
+                .create(personObject)
+                .then(newPerson => {
+                    setPersons(persons.concat(newPerson))
+                    setShowAll(persons.concat(newPerson))
+                    setName('')
+                    setNumber('')
+            })
         }
     }
+
+    const deletePers = (id, name) => {
+        if(window.confirm(`Delete ${name} ?`) === true) {
+            phonebookService
+            .deletePers(id)
+            .then(() => {
+                setPersons(persons.filter(person => person.id !== id ))
+                setShowAll(persons.filter(person => person.id !== id ))
+            })
+    } else { return }
+}
 
    const handlePersonChange = (event) => {
     setName(event.target.value)
@@ -111,7 +153,7 @@ const Phonebook = () => {
                 handleNumberChange={handleNumberChange}/>
             </Section>
             <Section title={'Numbers'}>
-               <Persons showAll={showAll} />
+               <Persons showAll={showAll} deletePers={deletePers} />
             </Section>
         </>
     )
