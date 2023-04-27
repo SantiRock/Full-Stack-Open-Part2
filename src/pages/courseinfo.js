@@ -72,7 +72,11 @@ const Courseinfo = () => {
     }
   ]
   
-  return <Courses courses={courses}/>
+  return (
+    <div className="container">
+      <Courses courses={courses}/>
+    </div>
+  )
 }
 
 export default Courseinfo

@@ -32,7 +32,7 @@ const PersonForm = ( {addPerson, newName, handlePersonChange,
                 </div>
                 <p></p>
                 <div>
-                    <button type='submit' >add</button>
+                    <button className='add' type='submit' >add</button>
                 </div>
             </form>
         )
@@ -42,7 +42,7 @@ const Person = ( { name, number, deleteClickHandler } ) => {
 return(
     <li>
         {name} - {number}
-        <button onClick={deleteClickHandler}>Delete</button>
+        <button className='btn' onClick={deleteClickHandler}>Delete</button>
     </li>
 )}
 
@@ -67,11 +67,24 @@ const Section = ( {title, children} ) => {
     )
 }
 
+const Notification = ({ message, variant}) => {
+    if (message === null) {
+        return null
+    }
+    return (
+        <div className={`notification ${variant}`} >
+            {message}
+        </div>
+    )
+}
+
 const Phonebook = () => {
     const [persons, setPersons] = useState([])
     const [newName, setName] = useState('')
     const [newNumber, setNumber] =useState('')
     const [showAll, setShowAll] = useState(persons)
+    const [notificationMessage, setNotificationMessage] = useState(null)
+    const [notificationVariant, setNotificationVariant] = useState('success')
 
     useEffect(() => {
         phonebookService
@@ -96,6 +109,24 @@ const Phonebook = () => {
                         setShowAll(persons.map(person => person.id !== contact.id ? person : newPerson))
                         setName('')
                         setNumber('')
+                        setNotificationMessage(
+                           `${newPerson.name}'s number has been update` 
+                        )
+                        setNotificationVariant('success')
+                        setTimeout(() => {
+                            setNotificationMessage(null)
+                        }, 5000)
+                    })
+                    .catch( error => {
+                        setNotificationVariant('error')
+                        setNotificationMessage(
+                            `Information of ${newName} has already been removed from server`
+                        )                        
+                        setTimeout(() => {
+                            setNotificationMessage(null)
+                        }, 5000)
+                        setPersons(persons.filter(person => person.name !== newName ))
+                        setShowAll(persons.filter(person => person.name !== newName ))
                     })
             } else {
                 setName('')
@@ -114,6 +145,13 @@ const Phonebook = () => {
                     setShowAll(persons.concat(newPerson))
                     setName('')
                     setNumber('')
+                    setNotificationMessage(
+                        `${newPerson.name} has been add` 
+                     )
+                     setNotificationVariant('success')
+                     setTimeout(() => {
+                         setNotificationMessage(null)
+                     }, 5000)
             })
         }
     }
@@ -123,6 +161,24 @@ const Phonebook = () => {
             phonebookService
             .deletePers(id)
             .then(() => {
+                setPersons(persons.filter(person => person.id !== id ))
+                setShowAll(persons.filter(person => person.id !== id ))
+                setNotificationMessage(
+                    `${name}'s information has been delete` 
+                 )
+                 setNotificationVariant('success')
+                 setTimeout(() => {
+                     setNotificationMessage(null)
+                 }, 5000)
+            })
+            .catch( error => {
+                setNotificationVariant('error')
+                setNotificationMessage(
+                    `Information of ${name} has already been removed from server`
+                )
+                setTimeout(() => {
+                    setNotificationMessage(null)
+                }, 5000)
                 setPersons(persons.filter(person => person.id !== id ))
                 setShowAll(persons.filter(person => person.id !== id ))
             })
@@ -143,8 +199,9 @@ const Phonebook = () => {
    }
 
     return(
-        <>
+        <div className='container'>
             <Section title={'Phonebook'}>
+                <Notification message={notificationMessage} variant={notificationVariant}/>
                 <Filter handleFilter={handleFilter}/>
             </Section>
             <Section title={'Add a new contact'} >
@@ -155,7 +212,7 @@ const Phonebook = () => {
             <Section title={'Numbers'}>
                <Persons showAll={showAll} deletePers={deletePers} />
             </Section>
-        </>
+        </div>
     )
 }
 

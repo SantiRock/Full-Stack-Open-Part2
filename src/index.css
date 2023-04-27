@@ -1,0 +1,54 @@
+body{
+    font-family: sans-serif;
+    font-size: 14px;
+}
+
+.container {
+    padding: 20px;
+    width: max-content;
+}
+
+.btn {
+    margin-left: 10px;
+    font-size: 11px;
+    border-radius: 5px;
+    border: 1px solid rgb(222, 222, 222);
+    cursor: pointer;
+}
+
+.btn:hover{
+    background-color: rgb(228, 227, 227);
+    border: none;
+}
+
+ul {
+    list-style-type: none ;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+.add {
+    cursor: pointer;
+}
+
+.notification {
+    background: rgb(229, 229, 229);
+    font-size: 14px;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+.notification.success {
+    color: rgb(40, 120, 48);
+    border: 2px solid rgb(40, 120, 48);
+
+}
+
+.notification.error {
+    color: red;
+    border: 2px solid red;
+}
