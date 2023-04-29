@@ -8,12 +8,8 @@ const getCountries = (name) => {
     return request.then(response => response.data)
 }
 
-const geoCoding = ( city, ccode) => {
-    const request = axios.get(`http://api.openweathermap.org/geo/1.0/direct?q=${city},${ccode}&limit=1&appid=${KEY}`) 
-}
-
 const openWheather = ( city, ccode) => {
-    const request = axios.get(`http://api.openweathermap.org/data/2.5/weather?q=${city},${ccode}&APPID=${KEY}&units=metric`)
+    const request = axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city},${ccode}&APPID=${KEY}&units=metric`)
     return request.then(response => response.data)
 }
 
