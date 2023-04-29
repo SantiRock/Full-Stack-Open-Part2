@@ -52,3 +52,11 @@ li {
     color: red;
     border: 2px solid red;
 }
+
+.nerror {
+    color: red;
+}
+
+.nnormal {
+    color: black;
+}

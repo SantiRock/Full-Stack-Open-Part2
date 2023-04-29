@@ -12,6 +12,9 @@ const Navbar = () => {
           <NavLink to="/phonebook" activestyle='true'>
             Phonebook
           </NavLink>
+          <NavLink to="/countries" activestyle='true'>
+            Countries
+          </NavLink>
         </NavMenu>
       </Nav>
     </>
